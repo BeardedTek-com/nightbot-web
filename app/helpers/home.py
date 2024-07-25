@@ -1,3 +1,4 @@
+from flask import redirect
 import os
 
 api_endpoints = {
@@ -7,12 +8,10 @@ api_endpoints = {
 class Home:
     def index(self):
         if "NIGHTBOT_BEARER" not in os.environ:
-            self.login()
+            return "<a href='/oauth/initiate'>LOGIN</a>"
         else:
             self.api_list()
-    def login(self):
-        return "<a href='/oauth/initiate'>LOGIN</a>"
-    
+            
     def api_list(self):
         output = ""
         for endpoint in api_endpoints:
