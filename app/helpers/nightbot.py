@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, jsonify
 import requests
 
 class NightBot:
@@ -22,7 +22,9 @@ class NightBot:
     def authorize(self):
         if self.ready:
             print("AUTHORIZE READY")
-            return redirect(f"{self.authorize_url}?response_type=code&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}", code=302)
+            redirect_url = f"{self.authorize_url}?response_type=code&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}"
+            print(redirect_url)
+            return redirect( redirect_url, code=302)
         else:
             print("AUTHORIZE NOT READY")
             return redirect("/config", code=302)
@@ -30,6 +32,6 @@ class NightBot:
     def get_token(self):
         if "token" in request.args:
             self.token = request.args['token']
-            return self.token
+            return jsonify(self.token)
         else:
-            return "ERROR: NO TOKEN"
+            return jsonify("ERROR: NO TOKEN")

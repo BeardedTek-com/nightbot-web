@@ -18,4 +18,4 @@ def oauth_initiate():
 
 @app.route('/oauth/token')
 def oauth_token():
-    return nb.token()
+    return nb.get_token()
