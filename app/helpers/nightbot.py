@@ -106,7 +106,7 @@ class NightBot:
                     text = ""
                     msg_queue = []
                     for line in message:
-                        if len(text) + len(line) + 1 >= 400:
+                        if len(text) + len(line) + 1 >= 350:
                             msg_queue.append(f"{text} {line}")
                             text = ""
                         else:
