@@ -1,0 +1,9 @@
+services:
+  nightbot-web:
+    container_name: nightbot-web
+    image: nightbot-web:latest
+    ports:
+      5000:5000
+    volumes:
+      - ./data:/data
+    command: /flask/start.sh
