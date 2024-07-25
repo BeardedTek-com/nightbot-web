@@ -1,5 +1,6 @@
 from flask import redirect
 import os
+from app import config
 
 api_endpoints = {
     "me": "/get/me"
@@ -7,7 +8,7 @@ api_endpoints = {
 
 class Home:
     def index(self):
-        if "NIGHTBOT_BEARER" not in os.environ:
-            return "<a href='/oauth/initiate'>LOGIN</a>"
-        else:
+        if 'bearer' in config:
             return "Already Authorized"
+        else:
+            return "<a href='/oauth/initiate'>LOGIN</a>"
