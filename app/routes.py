@@ -3,7 +3,7 @@ from app.helpers.nightbot import NightBot
 from app.helpers.home import Home
 
 # NightBot OAuth2
-nb = NightBot.NightBot("https://nightbot.newtowncrew.com")
+nb = NightBot("https://nightbot.newtowncrew.com")
 
 # NightBot Index
 nb_home = Home()
