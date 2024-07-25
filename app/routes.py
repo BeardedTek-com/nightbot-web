@@ -14,7 +14,7 @@ nb_home = Home()
 @app.route('/')
 @app.route('/index')
 def index():
-    nb_home.index()
+    return nb_home.index()
 
 @app.route('/config')
 def config():
