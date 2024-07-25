@@ -48,7 +48,7 @@ class NightBot:
                 "https://api.nightbot.tv/1/me",
                 headers = f"Authorization: Bearer {self.token['access_token']}"
                 )
-            return jsonify(x.text)
+            return x.text
 
         else:
             return jsonify("ERROR: NO TOKEN")
