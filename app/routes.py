@@ -10,8 +10,8 @@ def index():
 
 @app.route('/oauth/initiate')
 def oauth_initiate():
-    nb.authorize()
+    return nb.authorize()
 
 @app.route('/oauth/token')
 def oauth_token():
-    nb.token()
+    return nb.token()
