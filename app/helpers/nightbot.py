@@ -45,6 +45,7 @@ class Auth:
             self.token = json.loads(x.text)
             if "access_token" in self.token:
                  config['bearer']= self.token["access_token"]
+            return redirect('/',code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
 
