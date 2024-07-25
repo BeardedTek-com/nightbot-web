@@ -12,6 +12,6 @@ def index():
 def oauth_initiate():
     nb.authorize()
 
-@app.route('oauth/token')
+@app.route('/oauth/token')
 def oauth_token():
     nb.token()
