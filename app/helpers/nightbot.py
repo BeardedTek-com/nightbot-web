@@ -4,7 +4,7 @@ import requests
 class NightBot:
     def __init__(self, app_url):
         self.base_url = "https://api.nightbot.tv"
-        self.authorize_path = "/oauth2/autorize"
+        self.authorize_path = "/oauth2/authorize"
         self.authorize_url = f"{self.base_url}{self.authorize_path}"
         self.token_path = "/oauth2/token"
         self.token_url = f"{self.base_url}{self.token_path}"
