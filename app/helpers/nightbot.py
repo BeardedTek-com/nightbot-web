@@ -66,4 +66,6 @@ class NightBot:
                 f"{self.api_base_url}/me",
                 headers = self.headers
                 )
-            return jsonify(api_result.text)
+            result_json = json.loads(api_result.text)
+            
+            return jsonify(result_json)
