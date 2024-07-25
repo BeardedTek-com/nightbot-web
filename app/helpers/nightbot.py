@@ -70,14 +70,12 @@ class NightBot:
             
             return jsonify(result_json)
     
-    def channel_send(self,message=None):
+    def channel_send(self):
         if not self.headers:
             return redirect('/', code=302)
         else:
-            if not message:
-                message = "This is a test of channel send from NightBot-Web."
             data = {
-                "message"        : message
+                "message"        : "This is a test of channel send from NightBot-Web."
             }
             api_result = requests.post(
                 f"{self.api_base_url}/channel/send",
