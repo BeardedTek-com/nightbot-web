@@ -79,8 +79,10 @@ class NightBot:
             data = {
                 "message"        : message
             }
-            x = requests.post(
+            api_result = requests.post(
                 f"{self.api_base_url}/channel/send",
                 data = data,
                 headers = self.headers
                 )
+            result_json = json.loads(api_result.text)
+            return jsonify(result_json)
