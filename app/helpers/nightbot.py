@@ -9,10 +9,10 @@ class NightBot:
         self.token_path = "/oauth2/token"
         self.token_url = f"{self.base_url}{self.token_path}"
         self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
-        self.client_secret = "95d0895354011ee410a12e261cf2c9bf2a95d228eb71ef1076a1a288a8859e22"
+        self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
         self.response_type = "code"
         self.redirect_uri = f"https://{app_url}/oauth/token"
-        self.scope = "channel channel_send commands"
+        self.scope = "channel"
         self.token = ""
         if self.client_id != "" and self.client_secret != "":
             self.ready = True
