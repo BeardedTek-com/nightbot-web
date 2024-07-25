@@ -12,7 +12,7 @@ class NightBot:
         self.client_secret = "95d0895354011ee410a12e261cf2c9bf2a95d228eb71ef1076a1a288a8859e22"
         self.response_type = "code"
         self.redirect_uri = f"https://{app_url}/oauth/token"
-        self.scope = "channel channel_send commands commands_default regulars song_requests song_requests_queue song_requests_playlist spam_protection subscribers timers"
+        self.scope = "channel channel_send commands"
         self.token = ""
         if self.client_id != "" and self.client_secret != "":
             self.ready = True
