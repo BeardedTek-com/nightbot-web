@@ -22,10 +22,10 @@ class NightBot:
     def authorize(self):
         if self.ready:
             print("AUTHORIZE READY")
-            redirect(f"{self.authorize_url}?response_type=code&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}", code=302)
+            return redirect(f"{self.authorize_url}?response_type=code&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}", code=302)
         else:
             print("AUTHORIZE NOT READY")
-            redirect("/config", code=302)
+            return redirect("/config", code=302)
 
     def get_token(self):
         if "token" in request.args:
