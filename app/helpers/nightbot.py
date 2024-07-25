@@ -1,7 +1,7 @@
 from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
-from app import config
+bearer = None
 class Auth:
     def __init__(self, app_url):
         self.base_url = "https://api.nightbot.tv"
@@ -44,17 +44,17 @@ class Auth:
 
             self.token = json.loads(x.text)
             if "access_token" in self.token:
-                 config['bearer']= self.token["access_token"]
+                 bearer= self.token["access_token"]
             return redirect('/',code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
 
 class API:
     def __init__(self):
-        if 'bearer' in config:
+        if bearer:
             self.api_base_url = "https://api.nightbot.tv/1"
             self.headers = {
-                "Authorization": f"Bearer {g.bearer}"
+                "Authorization": f"Bearer {bearer}"
             }
             self.api_ready = True
         else:
