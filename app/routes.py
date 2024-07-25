@@ -1,5 +1,6 @@
 from app import app
 from app.helpers.nightbot import NightBot
+from flask import request
 
 # NightBot OAuth2
 nb = NightBot("https://nightbot.newtowncrew.com")
@@ -28,3 +29,7 @@ def oauth_token():
 @app.route('/get/me')
 def get_me():
     return nb.get_me()
+@app.route('/api/channel/send')
+def channel_send():
+    message = request.args.get('message') if 'message' in request.args else None
+    return nb.channel_send(message=message)

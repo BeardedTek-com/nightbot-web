@@ -42,26 +42,26 @@ class NightBot:
         if "code" in request.args:
             self.code = request.args['code']
             data = {
-                "client_id": self.client_id,
-                "client_secret": self.client_secret,
-                "code": self.code,
-                "grant_type": "authorization_code"
+                "client_id"      : self.client_id,
+                "client_secret"  : self.client_secret,
+                "code"           : self.code,
+                "grant_type"     : "authorization_code"
             }
             x = requests.post(self.token_url, data = data)
 
             self.token = json.loads(x.text)
             if "access_token" in self.token:
                  self.bearer= self.token["access_token"]
+                 self.headers = {
+                    "Authorization": f"Bearer {self.bearer}"
+                }
             return redirect('/', code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
     def get_me(self):
-        if not self.bearer:
+        if not self.headers:
             return redirect('/', code=302)
         else:
-            self.headers = {
-                "Authorization": f"Bearer {self.bearer}"
-            }
             api_result = requests.get(
                 f"{self.api_base_url}/me",
                 headers = self.headers
@@ -69,3 +69,18 @@ class NightBot:
             result_json = json.loads(api_result.text)
             
             return jsonify(result_json)
+    
+    def channel_send(self,message=None):
+        if not self.headers:
+            return redirect('/', code=302)
+        else:
+            if not message:
+                message = "This is a test of channel send from NightBot-Web."
+            data = {
+                "message"        : message
+            }
+            x = requests.post(
+                f"{self.api_base_url}/channel/send",
+                data = data,
+                headers = self.headers
+                )
