@@ -106,11 +106,14 @@ class NightBot:
                     text = ""
                     msg_queue = []
                     for line in message:
-                        if len(text) + len(line) + 1 >= 350:
-                            msg_queue.append(f"{text} {line}")
+                        new_line = f"{text} {line}"
+                        if len(new_line) <= 390:
+                            text = new_line
+                            msg_queue.append(new_line)
                             text = ""
                         else:
-                            text = f"{text} {line}"
+                            msg_queue.append(text)
+                            text = line
                     for line in msg_queue:
                         results = []
                         api_result = requests.post(
