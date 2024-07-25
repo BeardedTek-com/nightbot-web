@@ -10,8 +10,8 @@ class Home:
         if "NIGHTBOT_BEARER" not in os.environ:
             return "<a href='/oauth/initiate'>LOGIN</a>"
         else:
-            self.api_list()
-            
+            return self.api_list()
+
     def api_list(self):
         output = ""
         for endpoint in api_endpoints:
