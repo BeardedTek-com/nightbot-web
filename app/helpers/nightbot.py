@@ -113,6 +113,7 @@ class NightBot:
                     for line in msg_queue:
                         results = []
                         api_result = requests.post(
+                            f"{self.api_base_url}/channel/send",
                             headers = self.headers,
                             data = {
                                 "message" : line
