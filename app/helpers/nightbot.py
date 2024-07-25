@@ -112,6 +112,8 @@ class NightBot:
                         else:
                             msg_queue.append(text)
                             text = line
+                    if len(text) > 0
+                        msg_queue.append(text)
                     for line in msg_queue:
                         results = []
                         api_result = requests.post(
