@@ -60,11 +60,8 @@ class API:
         else:
             self.api_ready = False
     def get_me(self):
-        if self.api_ready:
-            api_result = requests.get(
-                f"{self.api_base_url}/me",
-                headers = self.headers
-                )
-            return jsonify(api_result.text)
-        else:
-            return redirect('/', code=302)
+        api_result = requests.get(
+            f"{self.api_base_url}/me",
+            headers = self.headers
+            )
+        return jsonify(api_result.text)
