@@ -32,6 +32,6 @@ def oauth_token():
 
 
 # API Routes
-@app.route('get/me')
+@app.route('/get/me')
 def get_me():
     return nb_api.get_me()
