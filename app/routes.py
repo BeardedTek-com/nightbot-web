@@ -8,6 +8,10 @@ nb = NightBot("https://nightbot.newtowncrew.com")
 def index():
     return "Hello World"
 
+@app.route('/config')
+def config():
+    return "Config Page will go here"
+
 @app.route('/oauth/initiate')
 def oauth_initiate():
     return nb.authorize()
