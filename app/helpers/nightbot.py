@@ -91,7 +91,7 @@ class NightBot:
         if not self.headers:
             return redirect('/',code=302)
         else:
-            message_source = f"/data/message/{msg}"
+            message_source = f"/data/messages/{msg}"
             if not path.exists(message_source):
                 return f"{message_source} does not exist"
             else:
