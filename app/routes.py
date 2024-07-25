@@ -33,3 +33,7 @@ def get_me():
 @app.route('/channel/send')
 def channel_send():
     return nb.channel_send()
+
+@app.route('/channel/send/<file>')
+def channel_send_file(file):
+    return nb.channel_send_from_file(file)

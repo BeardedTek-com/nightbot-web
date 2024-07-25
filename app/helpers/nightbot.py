@@ -1,6 +1,8 @@
 from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
+import os.path as path
+
 class NightBot:
     def __init__(self, app_url):
         self.base_url = "https://api.nightbot.tv"
@@ -84,3 +86,42 @@ class NightBot:
                 )
             result_json = json.loads(api_result.text)
             return jsonify(result_json)
+    
+    def channel_send_from_file(self,msg):
+        if not self.headers:
+            return redirect('/',code=302)
+        else:
+            message_source = f"/data/message/{msg}"
+            if not path.exists(message_source):
+                return "Message does not exist"
+            else:
+                with open(message_source) as message_file:
+                    message = []
+                    for line in message_file:
+                        message.append(line)
+                if not message:
+                    return "Message could not be read."
+                else:
+                    text = ""
+                    msg_queue = []
+                    for line in message:
+                        if len(text) + len(line) + 1 >= 400:
+                            msg_queue.append(f"{text} {line}")
+                            text = ""
+                        else:
+                            text = f"{text} {line}"
+                    for line in msg_queue:
+                        results = []
+                        api_result = requests.post(
+                            headers = self.headers,
+                            data = {
+                                "message" : line
+                            }
+                        )
+                        results.append(json.loads(api_result.text))
+                    return jsonify(results)
+
+
+
+
+
