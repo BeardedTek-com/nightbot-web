@@ -32,6 +32,14 @@ class NightBot:
     def get_token(self):
         if "code" in request.args:
             self.token = request.args['code']
-            return jsonify(self.token)
+            data = {
+                "client_id": self.client_id,
+                "client_secret": self.client_secret,
+                "code": self.token,
+                "grant_type": "authorization_code"
+            }
+            x = requests.post(self.token_url, data = data)
+            return x.text
+
         else:
             return jsonify("ERROR: NO TOKEN")
