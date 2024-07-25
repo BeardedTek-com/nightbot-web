@@ -1,7 +1,11 @@
 from app import app
-from app.helpers.nightbot import NightBot
+import app.helpers.nightbot as NightBot
 
-nb = NightBot("https://nightbot.newtowncrew.com")
+# NightBot OAuth2
+nb_auth = NightBot.Auth("https://nightbot.newtowncrew.com")
+
+# NightBot API
+nb_api = NightBot.API()
 
 @app.route('/')
 @app.route('/index')
@@ -12,10 +16,18 @@ def index():
 def config():
     return "Config Page will go here"
 
+
+# OAuth Routes
 @app.route('/oauth/initiate')
 def oauth_initiate():
-    return nb.authorize()
+    return nb_auth.authorize()
 
 @app.route('/oauth/token')
 def oauth_token():
-    return nb.get_token()
+    return nb_auth.get_token()
+
+
+# API Routes
+@app.route('get/me')
+def get_me():
+    return nb_api.get_me()
