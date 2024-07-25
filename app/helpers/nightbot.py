@@ -4,7 +4,7 @@ import json
 class NightBot:
     def __init__(self, app_url):
         self.base_url = "https://api.nightbot.tv"
-        self.base_api_url = f"{self.base_url}/1"
+        self.api_base_url = f"{self.base_url}/1"
         self.authorize_path = "/oauth2/authorize"
         self.authorize_url = f"{self.base_url}{self.authorize_path}"
         self.token_path = "/oauth2/token"
@@ -21,7 +21,13 @@ class NightBot:
             self.ready = True
         else:
             self.ready = False
-    
+
+    def index(self):
+        if self.bearer:
+            return "Already Authorized"
+        else:
+            return "<a href='/oauth/initiate'>LOGIN</a>"
+        
     def authorize(self):
         if self.ready:
             print("AUTHORIZE READY")

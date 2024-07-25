@@ -1,17 +1,13 @@
 from app import app
 from app.helpers.nightbot import NightBot
-from app.helpers.home import Home
 
 # NightBot OAuth2
 nb = NightBot("https://nightbot.newtowncrew.com")
 
-# NightBot Index
-nb_home = Home()
-
 @app.route('/')
 @app.route('/index')
 def index():
-    return nb_home.index()
+    return nb.index()
 
 @app.route('/config')
 def config():
