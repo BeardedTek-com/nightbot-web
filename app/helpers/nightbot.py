@@ -26,6 +26,7 @@ class NightBot:
         self.bearer = None
 
         # DANGER: EVERYTHING BELOW THIS LINE NEEDS TO BE NOT HARD CODED!!! It should be provided by the user
+        # NOTE: For those trying to find data leaks, the creds are changed after each test.  Whatever is in GitHub is an old rotated secret.
         self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
         self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
