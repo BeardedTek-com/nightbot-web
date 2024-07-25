@@ -1,10 +1,10 @@
 from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
-bearer = None
-class Auth:
+class NightBot:
     def __init__(self, app_url):
         self.base_url = "https://api.nightbot.tv"
+        self.base_api_url = f"{self.base_url}/1"
         self.authorize_path = "/oauth2/authorize"
         self.authorize_url = f"{self.base_url}{self.authorize_path}"
         self.token_path = "/oauth2/token"
@@ -14,8 +14,9 @@ class Auth:
         self.response_type = "code"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
         self.scope = "channel"
-        self.code = ""
+        self.code = None
         self.token = {}
+        self.bearer = None
         if self.client_id != "" and self.client_secret != "":
             self.ready = True
         else:
@@ -44,24 +45,19 @@ class Auth:
 
             self.token = json.loads(x.text)
             if "access_token" in self.token:
-                 bearer= self.token["access_token"]
-            return redirect('/',code=302)
+                 self.bearer= self.token["access_token"]
+            return redirect('/', code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
-
-class API:
-    def __init__(self):
-        if bearer:
-            self.api_base_url = "https://api.nightbot.tv/1"
-            self.headers = {
-                "Authorization": f"Bearer {bearer}"
-            }
-            self.api_ready = True
-        else:
-            self.api_ready = False
     def get_me(self):
-        api_result = requests.get(
-            f"{self.api_base_url}/me",
-            headers = self.headers
-            )
-        return jsonify(api_result.text)
+        if not self.bearer:
+            return redirect('/', code=302)
+        else:
+            self.headers = {
+                "Authorization": f"Bearer {self.bearer}"
+            }
+            api_result = requests.get(
+                f"{self.api_base_url}/me",
+                headers = self.headers
+                )
+            return jsonify(api_result.text)
