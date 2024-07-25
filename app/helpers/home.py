@@ -10,10 +10,4 @@ class Home:
         if "NIGHTBOT_BEARER" not in os.environ:
             return "<a href='/oauth/initiate'>LOGIN</a>"
         else:
-            output = ""
-            for endpoint in api_endpoints:
-                output += f"<a href='{api_endpoints[endpoint]}'>{endpoint}</a></br>"
-            if output == "":
-                return "No Endpoints configured"
-            else:
-                return output
+            return "Already Authorized"

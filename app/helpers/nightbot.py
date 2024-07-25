@@ -1,7 +1,6 @@
-from flask import Flask, redirect, request, jsonify
+from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
-import os
 
 class Auth:
     def __init__(self, app_url):
@@ -45,17 +44,16 @@ class Auth:
 
             self.token = json.loads(x.text)
             if "access_token" in self.token:
-                 os.environ["NIGHTBOT_BEARER"] = self.token["access_token"]
+                 g.bearer = self.token["access_token"]
         else:
             return jsonify("ERROR: NO TOKEN")
 
 class API:
     def __init__(self):
-        if "access_token" in os.environ :
-            self.access_token = os.environ["NIGHTBOT_BEARER"]
+        if hasattr(g, 'bearer'):
             self.api_base_url = "https://api.nightbot.tv/1"
             self.headers = {
-                "Authorization": f"Bearer {self.access_token}"
+                "Authorization": f"Bearer {g.bearer}"
             }
             self.api_ready = True
         else:
