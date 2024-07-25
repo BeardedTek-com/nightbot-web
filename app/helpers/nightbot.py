@@ -1,5 +1,6 @@
 from flask import Flask, redirect, request, jsonify
 import requests
+import json
 
 class NightBot:
     def __init__(self, app_url):
@@ -13,7 +14,8 @@ class NightBot:
         self.response_type = "code"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
         self.scope = "channel"
-        self.token = ""
+        self.code = ""
+        self.token = {}
         if self.client_id != "" and self.client_secret != "":
             self.ready = True
         else:
@@ -31,15 +33,17 @@ class NightBot:
 
     def get_token(self):
         if "code" in request.args:
-            self.token = request.args['code']
+            self.code = request.args['code']
             data = {
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
-                "code": self.token,
+                "code": self.code,
                 "grant_type": "authorization_code"
             }
             x = requests.post(self.token_url, data = data)
-            return x.text
+
+            self.token = json.loads(x.text)
+            return self.token
 
         else:
             return jsonify("ERROR: NO TOKEN")
