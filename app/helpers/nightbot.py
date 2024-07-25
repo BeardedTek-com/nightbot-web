@@ -93,7 +93,7 @@ class NightBot:
         else:
             message_source = f"/data/message/{msg}"
             if not path.exists(message_source):
-                return f"{msg} does not exist"
+                return f"{message_source} does not exist"
             else:
                 with open(message_source) as message_file:
                     message = []
