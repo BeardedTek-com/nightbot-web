@@ -2,6 +2,7 @@ from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
 import os.path as path
+from time import sleep
 
 class NightBot:
     def __init__(self, app_url):
@@ -120,6 +121,7 @@ class NightBot:
                             }
                         )
                         results.append(json.loads(api_result.text))
+                        sleep(5.5)
                     return jsonify(results)
 
 
