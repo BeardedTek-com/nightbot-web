@@ -13,7 +13,7 @@ class NightBot:
         self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
         self.response_type = "code"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
-        self.scope = "channel"
+        self.scope = "channel channel_send commands commands_default subscribers timers regulars"
         self.code = None
         self.token = {}
         self.bearer = None
