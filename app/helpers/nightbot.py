@@ -43,10 +43,13 @@ class NightBot:
             x = requests.post(self.token_url, data = data)
 
             self.token = json.loads(x.text)
-
+            
+            headers = {
+                "Authorization": f"Bearer {self.token['access_token']}"
+            }
             x = requests.get(
                 "https://api.nightbot.tv/1/me",
-                headers = f"Authorization: Bearer {self.token['access_token']}"
+                headers = headers
                 )
             return x.text
 
