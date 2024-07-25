@@ -30,8 +30,8 @@ class NightBot:
             return redirect("/config", code=302)
 
     def get_token(self):
-        if "token" in request.args:
-            self.token = request.args['token']
+        if "code" in request.args:
+            self.token = request.args['code']
             return jsonify(self.token)
         else:
             return jsonify("ERROR: NO TOKEN")
