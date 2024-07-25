@@ -32,5 +32,4 @@ def get_me():
 
 @app.route('/channel/send')
 def channel_send():
-    message = request.args.get('message') if 'message' in request.args else None
-    return nb.channel_send(message=message)
+    return nb.channel_send()
