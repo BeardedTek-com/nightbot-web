@@ -1,5 +1,5 @@
 from app import app
-from app.helpers.nightbot import Nightbot
+from app.helpers.nightbot import NightBot
 from app.helpers.home import Home
 
 # NightBot OAuth2
