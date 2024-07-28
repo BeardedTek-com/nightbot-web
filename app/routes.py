@@ -19,7 +19,7 @@ nb = NightBot("https://nightbot.newtowncrew.com",
                        song_requests_queue \
                        song_requests_playlist \
                        spam_protection \
-                       timers"
+                       timers",
               debug=True)
 
 @app.route('/')
