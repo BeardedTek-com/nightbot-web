@@ -104,7 +104,7 @@ class NightBot:
                     "Authorization": f"Bearer {self.bearer}"
                 }
             self.print_stderr(self.bearer)
-            self.print_headers(self.headers)
+            self.print_stderr(self.headers)
             return redirect('/', code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
