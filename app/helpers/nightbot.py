@@ -95,16 +95,17 @@ class NightBot:
                 "code"           : self.code,
                 "grant_type"     : "authorization_code"
             }
+            self.print_stderr(self.token_url)
+            self.print_stderr(self.code)
+            self.print_stderr(data)
             x = requests.post(self.token_url, data = data)
-
             self.token = json.loads(x.text)
+            self.print_stderr(self.token)
             if "access_token" in self.token:
                  self.bearer= self.token["access_token"]
                  self.headers = {
                     "Authorization": f"Bearer {self.bearer}"
                 }
-            self.print_stderr(self.bearer)
-            self.print_stderr(self.headers)
             return redirect('/', code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
