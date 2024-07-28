@@ -32,7 +32,7 @@ class NightBot:
         # DANGER: EVERYTHING BELOW THIS LINE NEEDS TO BE NOT HARD CODED!!! It should be provided by the user
         # NOTE: For those trying to find data leaks, the creds are changed after each test.  Whatever is in GitHub is an old rotated secret.
         self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
-        self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
+        self.client_secret = "95d68d5540b2bb376f4452990052b3dace1573a8b6db86eddcad8584c103e6c3"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
         scope =   "channel \
                         channel_send \
