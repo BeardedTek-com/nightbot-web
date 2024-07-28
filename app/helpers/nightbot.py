@@ -226,10 +226,12 @@ class NightBot:
                     except IndexError:
                         param = ""
                     url = f"{api_model_url[0]}{param}"
+                    self.print_stderr(url)
                     api_result = requests.get(
-                        f"{self.api_base_url}",
+                        f"{url}",
                         headers = self.headers
                         )
+                    self.print_stderr(api_result)
                     return jsonify(
                         json.loads(
                             api_result.text
