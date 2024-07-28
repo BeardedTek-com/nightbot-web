@@ -83,13 +83,13 @@ class API:
 
         self.custom_command_add = {
             "method": "POST",
-            "url": "/1/commands"
+            "url": "/1/commands",
             "data": {
                 "message": str,
                 "userLevel": str,
                 "coolDown": int,
                 "name": str
-            }
+            },
             "result": {
                 "createdAt": str,
                 "updatedAt": str,
@@ -199,7 +199,7 @@ class API:
             "result": {
                 "name": "!commands",
                 "coolDown": 6,
-                "enabled": true,
+                "enabled": bool,
                 "userLevel": "everyone",
                 "_name": "commands",
                 "_description": "Allows users to get a list of commands and moderators to manage commands",
