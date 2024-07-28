@@ -6,7 +6,21 @@ from app.models.api import API as api_model
 api = api_model()
 
 # NightBot OAuth2
-nb = NightBot("https://nightbot.newtowncrew.com")
+nb = NightBot("https://nightbot.newtowncrew.com",
+              client_id="84c9ff8165a03c0b5e7b65a9bb3b7e1e",
+              client_secret="95d68d5540b2bb376f4452990052b3dace1573a8b6db86eddcad8584c103e6c3",
+              scope = "channel \
+                       channel_send \
+                       commands \
+                       commands_default \
+                       regulars \
+                       subscribers \
+                       song_requests \
+                       song_requests_queue \
+                       song_requests_playlist \
+                       spam_protection \
+                       timers"
+              debug=True)
 
 @app.route('/')
 @app.route('/index')

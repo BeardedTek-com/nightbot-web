@@ -8,8 +8,22 @@ from flask import Flask, redirect, request, jsonify
 
 
 class NightBot:
-    def __init__(self, app_url):
+    def __init__(self,
+                 app_url,
+                 client_id=None,
+                 client_secret=None,
+                 scope=None,
+                 debug=False):
         ''' NightBot API Helper Class
+            ### inputs ###
+            app_url: base hosted app's url **must be https
+                     ex...  https://nightbot.example.com
+            client_id: client id from nightbot
+            client_secret: client secret from nightbot
+            scope: necessary only if you want to limit scope of the app.
+                   otherwise it uses all scopes.
+            debug: will output debug information to stderr
+
             base_url (str): base uri of NightBot's API Server
             api_base_url: base uri of api
             authorize_url: url to authenticate via oauth2
@@ -17,6 +31,7 @@ class NightBot:
             redirect_uri: OAUTH2 Redirect URI - MUST BE REGISTERED WITH NIGHTBOT APP
             scope: scopes we are requesting access to
         '''
+        self.debug = debug
         self.base_url = "https://api.nightbot.tv"
         self.api_base_url = f"{self.base_url}/1"
         self.authorize_path = "/oauth2/authorize"
@@ -28,13 +43,14 @@ class NightBot:
         self.token = {}
         self.bearer = None
         self.api_user = None
+        self.app_url = app_url
 
         # DANGER: EVERYTHING BELOW THIS LINE NEEDS TO BE NOT HARD CODED!!! It should be provided by the user
         # NOTE: For those trying to find data leaks, the creds are changed after each test.  Whatever is in GitHub is an old rotated secret.
-        self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
-        self.client_secret = "95d68d5540b2bb376f4452990052b3dace1573a8b6db86eddcad8584c103e6c3"
-        self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
-        scope =   "channel \
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.redirect_uri = f"{self.app_url}/oauth/token"
+        self.scopes =   "channel \
                         channel_send \
                         commands \
                         commands_default \
@@ -45,10 +61,12 @@ class NightBot:
                         song_requests_playlist \
                         spam_protection \
                         timers"
+        self.scope = scope if scope else self.scopes
         self.scope = re.sub(' +',' ',scope)
 
     def print_stderr(self,log):
-        print(log, file=stderr)
+        if self.debug:
+            print(log, file=stderr)
 
     def ready(self):
         ''' Checks to see if 'client_id' and 'client_secret' are provided
@@ -192,10 +210,14 @@ class NightBot:
 
     def api_send(self,api_model,data=None):
         if not self.bearer:
+            self.print_stderr("No Bearer")
             return {
                 "error":"no bearer"
                 }
         else:
+            self.print_stderr("Bearer Present, continue")
+            self.print_stderr(api_model)
+            self.print_stderr(data)
             if "method" in api_model:
                 if api_model['method'] == "GET":
                     api_model_url = api_model['url'].split(':')
