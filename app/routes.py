@@ -1,6 +1,9 @@
+from flask import request
+
 from app import app
 from app.helpers.nightbot import NightBot
-from flask import request
+from app.models.api import API as api_model
+api = api_model()
 
 # NightBot OAuth2
 nb = NightBot("https://nightbot.newtowncrew.com")
@@ -26,14 +29,33 @@ def oauth_token():
 
 
 # API Routes
-@app.route('/get/me')
+@app.route('/api/me')
 def get_me():
-    return nb.get_me()
+    return nb.api_send(
+        api.me,
+        data = None
+    )
 
-@app.route('/channel/send')
+@app.route('/api/channel/send')
 def channel_send():
     return nb.channel_send()
 
-@app.route('/channel/send/<file>')
+@app.route('/api/channel/send/<file>')
 def channel_send_file(file):
     return nb.channel_send_from_file(file)
+
+
+
+@app.route('/api/commands/get')
+def commands_get_all():
+    return nb.api_send(
+        api.custom_commands_get_all,
+        data = None
+    )
+
+@app.route('/api/commands/get/<id>')
+def commands_get_by_id(id):
+    return nb.api_send(
+        api.custom_command_get,
+        data = None
+    )

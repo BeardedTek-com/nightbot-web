@@ -177,4 +177,29 @@ class NightBot:
                         )
                         results.append(json.loads(api_result.text))
                         sleep(5.5)
-                    return jsonify(results) 
+                    return jsonify(results)
+                
+
+    def api_send(self,api_model,data=None):
+        if not self.bearer:
+            return {
+                "error":"no bearer"
+                }
+        else:
+            if "method" in api_model:
+                if api_model['method'] == "GET":
+                    api_model_url = api_model['url'].split(':')
+                    try:
+                        param = data[api_model_url[1]]
+                    except IndexError:
+                        param = ""
+                    url = f"{api_model_url[0]}{param}"
+                    api_result = requests.get(
+                        f"{self.api_base_url}",
+                        headers = self.headers
+                        )
+                    return jsonify(
+                        json.loads(
+                            api_result.text
+                            )
+                        )

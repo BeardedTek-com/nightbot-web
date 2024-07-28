@@ -1,4 +1,6 @@
 class API:
+
+    # ME
     def __init__(self):
         self.me = {
             "me" : {
@@ -18,6 +20,8 @@ class API:
             }
         }
 
+
+        # CHANNEL
         self.channel = {
             "method": "GET",
             "url": "/1/channel",
@@ -51,6 +55,8 @@ class API:
             }
         }
 
+
+        # CHANNEL SEND
         self.channel_send = {
             "method": "POST",
             "url": "/1/channel/send",
@@ -62,6 +68,10 @@ class API:
             }
         }
 
+
+        # COMMANDS
+
+        # CUSTOM COMMANDS
         self.custom_commands_get_all = {
             "method": "GET",
             "url": "/1/commands",
@@ -120,7 +130,7 @@ class API:
 
         self.custom_command_edit = {
             "method": "PUT",
-            "url": "/1/commands/<id>",
+            "url": "/1/commands/:id",
             "id": str,
             "data": {
                 "cooldown": int,
@@ -144,13 +154,15 @@ class API:
 
         self.custom_command_delete = {
             "method": "DELTE",
-            "url": "/1/commands/<id>",
+            "url": "/1/commands/:id",
             "id": str,
             "result": {
                 "status": int
             }
         }
 
+
+        # DEFAULT COMMANDS
         self.default_commands_get_all = {
             "method": "GET",
             "url": "/1/commands/default",
@@ -174,7 +186,7 @@ class API:
 
         self.default_command_get = {
             "method": "GET",
-            "url": "/1/commands/default/<name>",
+            "url": "/1/commands/default/:name",
             "name": str,
             "result": {
                 "name": str,
@@ -189,7 +201,7 @@ class API:
 
         self.default_command_edit = {
             "method": "PUT",
-            "url": "/1/commands/default/<name>",
+            "url": "/1/commands/default/:name",
             "name": str,
             "data": {
                 "coolDown": int,
