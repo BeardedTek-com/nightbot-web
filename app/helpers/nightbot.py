@@ -24,13 +24,24 @@ class NightBot:
         self.code = None
         self.token = {}
         self.bearer = None
+        self.api_user = None
 
         # DANGER: EVERYTHING BELOW THIS LINE NEEDS TO BE NOT HARD CODED!!! It should be provided by the user
         # NOTE: For those trying to find data leaks, the creds are changed after each test.  Whatever is in GitHub is an old rotated secret.
         self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
         self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
-        self.scope = "channel channel_send commands commands_default subscribers timers regulars"
+        self.scope =   "channel \
+                        channel_send \
+                        commands \
+                        commands_default\
+                        regulars \
+                        subscribers \
+                        song_requests \
+                        song_requests_queue \
+                        song_requests_playlist \
+                        spam_protection \
+                        timers"
 
     def ready(self):
         ''' Checks to see if 'client_id' and 'client_secret' are provided
@@ -47,8 +58,9 @@ class NightBot:
             return "Already Authorized"
         else:
             return "<a href='/oauth/initiate'>LOGIN</a>"
-        
-    def authorize(self):
+
+    # Authentication
+    def oauth2_authorize(self):
         ''' Authenticates with NightBot API via OAUTH2
         '''
         if self.ready():
@@ -62,7 +74,7 @@ class NightBot:
             print("AUTHORIZE NOT READY")
             return redirect("/config", code=302)
 
-    def get_token(self):
+    def oauth2_token(self):
         ''' Retrieves access_token from NightBot.
                 NOTES:
                     - Need to store more info about the token including when it will expire, refresh code, etc.
@@ -87,6 +99,8 @@ class NightBot:
             return redirect('/', code=302)
         else:
             return jsonify("ERROR: NO TOKEN")
+    
+    # API - /1/me
     def get_me(self):
         ''' NightBot API Endpoint /me: Provides authenticated user information
                 NOTES:
@@ -100,9 +114,9 @@ class NightBot:
                 f"{self.api_base_url}/me",
                 headers = self.headers
                 )
-            result_json = json.loads(api_result.text)
+            self.api_user = json.loads(api_result.text)
             
-            return jsonify(result_json)
+            return jsonify(self.api_user)
     
     def channel_send(self):
         ''' Sends a test message to make sure things are working

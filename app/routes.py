@@ -18,11 +18,11 @@ def config():
 # OAuth Routes
 @app.route('/oauth/initiate')
 def oauth_initiate():
-    return nb.authorize()
+    return nb.oauth2_authorize()
 
 @app.route('/oauth/token')
 def oauth_token():
-    return nb.get_token()
+    return nb.oauth2_token()
 
 
 # API Routes
