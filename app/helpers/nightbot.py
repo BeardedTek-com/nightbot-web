@@ -34,7 +34,7 @@ class NightBot:
         self.scope =   "channel \
                         channel_send \
                         commands \
-                        commands_default\
+                        commands_default \
                         regulars \
                         subscribers \
                         song_requests \
