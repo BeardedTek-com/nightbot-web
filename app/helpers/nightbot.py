@@ -45,7 +45,7 @@ class NightBot:
                         song_requests_playlist \
                         spam_protection \
                         timers"
-        self.scope = re.sub(r'(.)\1+',r'\1',scope)
+        self.scope = re.sub(' +',' ',scope)
 
     def print_stderr(self,log):
         print(log, file=stderr)
