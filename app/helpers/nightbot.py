@@ -1,9 +1,11 @@
-from flask import Flask, redirect, request, jsonify, g
 import requests
 import json
 import os.path as path
+import re
 from time import sleep
-from sys import stderr, stdin
+from sys import stderr
+from flask import Flask, redirect, request, jsonify
+
 
 class NightBot:
     def __init__(self, app_url):
@@ -32,7 +34,7 @@ class NightBot:
         self.client_id = "84c9ff8165a03c0b5e7b65a9bb3b7e1e"
         self.client_secret = "4197b54c7d9b028956a457cef2ffbd4ed4f412f0bd86c718e57997bc91bf939c"
         self.redirect_uri = f"https://nightbot.newtowncrew.com/oauth/token"
-        self.scope =   "channel \
+        scope =   "channel \
                         channel_send \
                         commands \
                         commands_default \
@@ -43,6 +45,7 @@ class NightBot:
                         song_requests_playlist \
                         spam_protection \
                         timers"
+        self.scope = re.sub(r'(.)\1+',r'\1',scope)
 
     def print_stderr(self,log):
         print(log, file=stderr)
