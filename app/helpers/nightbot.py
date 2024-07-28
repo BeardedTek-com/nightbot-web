@@ -3,6 +3,7 @@ import requests
 import json
 import os.path as path
 from time import sleep
+from sys import stderr, stdin
 
 class NightBot:
     def __init__(self, app_url):
@@ -43,6 +44,9 @@ class NightBot:
                         spam_protection \
                         timers"
 
+    def print_stderr(self,log):
+        print(log, file=stderr)
+
     def ready(self):
         ''' Checks to see if 'client_id' and 'client_secret' are provided
         '''
@@ -66,12 +70,12 @@ class NightBot:
         if self.ready():
             ''' If 'client_id' and 'client_secret' are provided we authenticate, otherwise we send the user to /config
             '''
-            print("AUTHORIZE READY")
+            self.print_stderr("AUTHORIZE READY")
             redirect_url = f"{self.authorize_url}?response_type={self.response_type}&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}"
-            print(redirect_url)
+            self.print_stderr(redirect_url)
             return redirect( redirect_url, code=302)
         else:
-            print("AUTHORIZE NOT READY")
+            self.print_stderr("AUTHORIZE NOT READY")
             return redirect("/config", code=302)
 
     def oauth2_token(self):
