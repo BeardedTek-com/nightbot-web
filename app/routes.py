@@ -71,5 +71,6 @@ def commands_get_all():
 def commands_get_by_id(id):
     return nb.api_send(
         api.custom_command_get,
+        param = id,
         data = None
     )
