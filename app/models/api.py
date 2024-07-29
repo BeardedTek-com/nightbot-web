@@ -3,18 +3,16 @@ class API:
     # ME
     def __init__(self):
         self.me = {
-            "me" : {
-                "method" : "GET",
-                "url" : "/1/me",
-                "result" :{
-                    "status" : int,
-                    "authorization":{
-                        "userLevel" : str,
-                        "authType" : str,
-                        "credentials" : {
-                            "expires" : str,
-                            "client" : str
-                        }
+            "method" : "GET",
+            "url" : "/1/me",
+            "result" :{
+                "status" : int,
+                "authorization":{
+                    "userLevel" : str,
+                    "authType" : str,
+                    "credentials" : {
+                        "expires" : str,
+                        "client" : str
                     }
                 }
             }
