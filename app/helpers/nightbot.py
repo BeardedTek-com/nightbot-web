@@ -226,7 +226,7 @@ class NightBot:
                     except IndexError:
                         param = ""
                     self.print_stderr(f"###param###: {param}")
-                    url = f"{api_model_url[0]}{param}"
+                    url = f"{self.base_url}{api_model_url[0]}{param}"
                     self.print_stderr(f"###URL###: {url}")
                     api_result = requests.get(
                         f"{url}",
