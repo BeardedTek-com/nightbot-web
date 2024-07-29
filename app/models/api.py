@@ -112,7 +112,7 @@ class API:
         
         self.custom_command_get = {
             "method": "GET",
-            "url": "/1/commands/<id>",
+            "url": "/1/commands/:id",
             "id": str,
             "result": {
                 "_id": str,
