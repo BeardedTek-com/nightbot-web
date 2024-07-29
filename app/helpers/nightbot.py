@@ -223,7 +223,7 @@ class NightBot:
                     api_model_url = api_model['url'].split(':')
                     try:
                         param = data[api_model_url[1]]
-                    except IndexError:
+                    except:
                         param = ""
                     self.print_stderr(f"###param###: {param}")
                     url = f"{self.base_url}{api_model_url[0]}{param}"
