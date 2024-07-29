@@ -208,6 +208,11 @@ class NightBot:
                     return jsonify(results)
                 
 
+    def verify_model(self,api_model,param=None,data=None):
+        
+        # We aren't using this yet, so we will return true until we enable it.
+        return True
+
     def api_send(self,api_model,param=None,data=None):
         if not self.bearer:
             self.print_stderr("No Bearer")

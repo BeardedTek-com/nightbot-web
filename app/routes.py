@@ -31,7 +31,6 @@ def index():
 def config():
     return "Config Page will go here"
 
-
 # OAuth Routes
 @app.route('/oauth/initiate')
 def oauth_initiate():
@@ -43,6 +42,24 @@ def oauth_token():
 
 
 # API Routes
+
+# Default API Route
+@app.route('/api')
+def api():
+    return "Default API Route"
+
+@app.route('/api', defaults={'path1': '','path2':'','path3':''})
+@app.route('/api/<path1:path1>', defaults={'path2':'','path3':''})
+@app.route('/api/<path1:path1>/<path2:path2>',defaults={'path3':''})
+@app.route('/api/<path1:path1>/<path2:path2>/<path3:path3>')
+def api_catchall(path1,path2,path3):
+    path = f"/api"
+    path = f"{path}/{path1}" if path1 else path
+    path = f"{path}/{path2}" if path2 else path
+    path = f"{path}/{path3}" if path3 else path
+    return f"You are looking for {path}"
+
+
 @app.route('/api/me')
 def get_me():
     return nb.api_send(
