@@ -238,3 +238,7 @@ class NightBot:
                             api_result.text
                             )
                         )
+                else:
+                    return jsonify({"error": "Invalid Method"})
+            else:
+                return jsonify({"error": "'method' not in 'api_model'"})
