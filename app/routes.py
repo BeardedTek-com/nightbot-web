@@ -49,9 +49,9 @@ def api():
     return "Default API Route"
 
 @app.route('/api', defaults={'path1': '','path2':'','path3':''})
-@app.route('/api/<path1:path1>', defaults={'path2':'','path3':''})
-@app.route('/api/<path1:path1>/<path2:path2>',defaults={'path3':''})
-@app.route('/api/<path1:path1>/<path2:path2>/<path3:path3>')
+@app.route('/api/<path1>', defaults={'path2':'','path3':''})
+@app.route('/api/<path1/<path2>',defaults={'path3':''})
+@app.route('/api/<path1/<path2>/<path3>')
 def api_catchall(path1,path2,path3):
     path = f"/api"
     path = f"{path}/{path1}" if path1 else path
