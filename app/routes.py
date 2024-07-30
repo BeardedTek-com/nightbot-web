@@ -48,12 +48,12 @@ def oauth_token():
 def api():
     return "Default API Route"
 
-@app.route('/1', defaults={'path1': None,'path2':None,'path3':None})
-@app.route('/1/<path1>', defaults={'path2':None,'path3':None})
-@app.route('/1/<path1/<path2>',defaults={'path3':None})
-@app.route('/1/<path1/<path2>/<path3>')
+@app.route('/api', defaults={'path1': None,'path2':None,'path3':None})
+@app.route('/api/<path1>', defaults={'path2':None,'path3':None})
+@app.route('/api/<path1>/<path2>',defaults={'path3':None})
+@app.route('/api/<path1>/<path2>/<path3>')
 def api_catchall(path1,path2,path3):
-    path = f"/1"
+    path = f"/api"
     path = f"{path}/{path1}" if path1 else path
     path = f"{path}/{path2}" if path2 else path
     path = f"{path}/{path3}" if path3 else path
