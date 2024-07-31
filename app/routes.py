@@ -56,6 +56,12 @@ def api_catchall(category,command,cmd_var):
                 nb.channel_send_from_file(cmd_var)
             else:
                 nb.channel_send()
+        else:
+            nb.api_send(
+                api.channel,
+                param = None,
+                data = None
+            )
     
     # Commands
     if category == "commands":
