@@ -44,50 +44,42 @@ def oauth_token():
 # API Routes
 
 # Default API Route
-@app.route('/api')
-def api():
-    return "Default API Route"
-
-@app.route('/api', defaults={'path1': None,'path2':None,'path3':None})
-@app.route('/api/<path1>', defaults={'path2':None,'path3':None})
-@app.route('/api/<path1>/<path2>',defaults={'path3':None})
-@app.route('/api/<path1>/<path2>/<path3>')
-def api_catchall(path1,path2,path3):
-    path = f"/api"
-    path = f"{path}/{path1}" if path1 else path
-    path = f"{path}/{path2}" if path2 else path
-    path = f"{path}/{path3}" if path3 else path
-    return f"You are looking for {path}"
-
-
-@app.route('/api/me')
-def get_me():
-    return nb.api_send(
-        api.me,
-        data = None
-    )
-
-@app.route('/api/channel/send')
-def channel_send():
-    return nb.channel_send()
-
-@app.route('/api/channel/send/<file>')
-def channel_send_file(file):
-    return nb.channel_send_from_file(file)
-
-
-
-@app.route('/api/commands/get')
-def commands_get_all():
-    return nb.api_send(
-        api.custom_commands_get_all,
-        data = None
-    )
-
-@app.route('/api/commands/get/<id>')
-def commands_get_by_id(id):
-    return nb.api_send(
-        api.custom_command_get,
-        param = id,
-        data = None
-    )
+@app.route('/api', defaults={'category': None,'command':None,'cmd_var':None})
+@app.route('/api/<category>', defaults={'command':None,'cmd_var':None})
+@app.route('/api/<category>/<command>',defaults={'cmd_var':None})
+@app.route('/api/<category>/<command>/<cmd_var>')
+def api_catchall(category,command,cmd_var):
+    # Channel
+    if category == "channel":
+        if command == "send":
+            if cmd_var:
+                nb.channel_send_from_file(cmd_var)
+            else:
+                nb.channel_send()
+    
+    # Commands
+    if category == "commands":
+        if command == "get":
+            if cmd_var:
+                return nb.api_send(
+                    api.custom_command_get,
+                    param = cmd_var,
+                    data = None
+                )
+            else:
+                return nb.api_send(
+                    api.custom_commands_get_all,
+                    data = None
+                )
+    # Me
+    if category == "me":
+        return nb.api_send(
+            api.me,
+            data = None
+        )
+        
+    else:
+        path = f"/api"
+        for value in [category,command,cmd_var]:
+            path = f"{path}/{value}" if value else path
+        return {"error" : "not implemented"}
