@@ -223,6 +223,7 @@ class NightBot:
             self.print_stderr("Bearer Present, continue")
             self.print_stderr(api_model)
             self.print_stderr(data)
+            api_result = None
             if "method" in api_model:
                 if api_model['method'] == "GET" or api_model['method'] == "POST":
                     api_model_url = api_model['url'].split(':')
@@ -234,17 +235,27 @@ class NightBot:
                     url = f"{self.base_url}{api_model_url[0]}"
                     url = f"{url}{param}" if param else url
                     self.print_stderr(f"###URL###: {url}")
-                    api_result = requests.get(
-                        f"{url}",
-                        headers = self.headers
+                    if api_model['method'] == "POST":
+                        api_result = requests.post(
+                            f"{url}",
+                            headers = self.headers,
+                            data = data
                         )
-                    self.print_stderr(api_result)
-                    return jsonify(
-                        json.loads(
-                            api_result.text
+                    if api_model['method'] == "GET":
+                        api_result = requests.get(
+                            f"{url}",
+                            headers = self.headers
                             )
-                        )
+                    if api_result:
+                        self.print_stderr(api_result)
+                        return jsonify(
+                            json.loads(
+                                api_result.text
+                                )
+                            )
+                    else:
+                        return jsonify({"error": "invalid method"})
                 else:
-                    return jsonify({"error": "Invalid Method"})
+                    return jsonify({"error": "invalid method"})
             else:
                 return jsonify({"error": "'method' not in 'api_model'"})
