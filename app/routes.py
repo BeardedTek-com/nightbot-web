@@ -56,16 +56,16 @@ def api_catchall(category,command,cmd_var):
                 nb.channel_send_from_file(cmd_var)
             else:
                 nb.channel_send()
-        elif command == "join":
+        if command == "join":
             # Join Channel
-            nb.api_send(
+            return nb.api_send(
                 api.channel_join,
                 param = None,
                 data = None
             )
-        elif command == "part":
+        if command == "part":
             # Leave Channel
-            nb.api_send(
+            return nb.api_send(
                 api.channel_part,
                 param = None,
                 data = None
@@ -83,25 +83,27 @@ def api_catchall(category,command,cmd_var):
         if not command:
             # Get Custom Commands
             if cmd_var:
+                # Get Custom Command by ID
                 return nb.api_send(
                     api.custom_command_get,
                     param = cmd_var,
                     data = None
                 )
             else:
+                # Get All Custom Commands
                 return nb.api_send(
                     api.custom_commands_get_all,
                     data = None
                 )
         if command == "default":
             if cmd_var:
-                nb.api_send(
+                return nb.api_send(
                     api.default_command_get,
                     param = cmd_var,
                     data = None
                 )
             if not cmd_var:
-                nb.api_send(
+                return nb.api_send(
                     api.default_commands_get_all,
                     param = None,
                     data = None
