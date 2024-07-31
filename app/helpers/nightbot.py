@@ -5,6 +5,7 @@ import re
 from time import sleep
 from sys import stderr
 from flask import Flask, redirect, request, jsonify
+from app import logs
 
 
 class NightBot:
@@ -64,9 +65,9 @@ class NightBot:
         self.scope = scope if scope else self.scopes
         self.scope = re.sub(' +',' ',scope)
 
-    def print_stderr(self,log):
+    def logging(self,log):
         if self.debug:
-            print(log, file=stderr)
+            logs.info(log)
 
     def ready(self):
         ''' Checks to see if 'client_id' and 'client_secret' are provided
@@ -91,12 +92,12 @@ class NightBot:
         if self.ready():
             ''' If 'client_id' and 'client_secret' are provided we authenticate, otherwise we send the user to /config
             '''
-            self.print_stderr("AUTHORIZE READY")
+            self.logging("AUTHORIZE READY")
             redirect_url = f"{self.authorize_url}?response_type={self.response_type}&client_id={self.client_id}&redirect_uri={self.redirect_uri}&scope={self.scope}"
-            self.print_stderr(redirect_url)
+            self.logging(redirect_url)
             return redirect( redirect_url, code=302)
         else:
-            self.print_stderr("AUTHORIZE NOT READY")
+            self.logging("AUTHORIZE NOT READY")
             return redirect("/config", code=302)
 
     def oauth2_token(self):
@@ -113,12 +114,12 @@ class NightBot:
                 "code"           : self.code,
                 "grant_type"     : "authorization_code"
             }
-            self.print_stderr(self.token_url)
-            self.print_stderr(self.code)
-            self.print_stderr(data)
+            self.logging(self.token_url)
+            self.logging(self.code)
+            self.logging(data)
             x = requests.post(self.token_url, data = data)
             self.token = json.loads(x.text)
-            self.print_stderr(self.token)
+            self.logging(self.token)
             if "access_token" in self.token:
                  self.bearer= self.token["access_token"]
                  self.headers = {
@@ -215,14 +216,14 @@ class NightBot:
 
     def api_send(self,api_model,param=None,data=None):
         if not self.bearer:
-            self.print_stderr("No Bearer")
+            self.logging("No Bearer")
             return {
                 "error":"no bearer"
                 }
         else:
-            self.print_stderr("Bearer Present, continue")
-            self.print_stderr(api_model)
-            self.print_stderr(data)
+            self.logging("Bearer Present, continue")
+            self.logging(api_model)
+            self.logging(data)
             api_result = None
             if "method" in api_model:
                 if api_model['method'] == "GET" or api_model['method'] == "POST":
@@ -231,10 +232,10 @@ class NightBot:
                         model_param = data[api_model_url[1]]
                     except:
                         model_param = ""
-                    self.print_stderr(f"###param###: {param}")
+                    self.logging(f"###param###: {param}")
                     url = f"{self.base_url}{api_model_url[0]}"
                     url = f"{url}{param}" if param else url
-                    self.print_stderr(f"###URL###: {url}")
+                    self.logging(f"###URL###: {url}")
                     if api_model['method'] == "POST":
                         api_result = requests.post(
                             f"{url}",
@@ -247,7 +248,7 @@ class NightBot:
                             headers = self.headers
                             )
                     if api_result:
-                        self.print_stderr(api_result)
+                        self.logging(api_result)
                         return jsonify(
                             json.loads(
                                 api_result.text
