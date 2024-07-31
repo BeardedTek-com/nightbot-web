@@ -224,7 +224,7 @@ class NightBot:
             self.print_stderr(api_model)
             self.print_stderr(data)
             if "method" in api_model:
-                if api_model['method'] == "GET":
+                if api_model['method'] == "GET" or api_model['method'] == "POST":
                     api_model_url = api_model['url'].split(':')
                     try:
                         model_param = data[api_model_url[1]]
