@@ -1,10 +1,84 @@
+name: ${PROJECT_NAME:-nightbot}
+
+networks:
+  traefik:
+    name: ${TRAEFIK_NETWORK:-nightbot_traefik}
+  nightbot:
+    name: ${NIGHTBOT_NETWORK:-nightbot_nightbot}
+
 services:
   nightbot-web:
     build: .
-    container_name: nightbot-web
+    container_name: nightbot_web
     image: nightbot-web:latest
-    ports:
-      - 5000:5000
+#    ports:
+#      - 5000:5000
     volumes:
       - ./data:/data
     command: /flask/start.sh
+    networks:
+      - traefik
+      - nightbot
+    env_file:
+      - path: ./env
+        required: true
+      - path: ./overrides.env
+        required: false
+    depends_on:
+      - db
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.nightbot-web.rule=Host(`${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`)'
+      - 'traefik.http.routers.nightbot-web.entryPoints=web'
+      - "traefik.http.routers.nightbot-web.service=nightbot-web-entrypoint"
+      - 'traefik.http.services.nightbot-web-entrypoint.loadbalancer.server.port=5000'
+
+  db:
+    container_name: nightbot_db
+    hostname: nightbot_db
+    image: postgres:16
+    restart: always
+    env_file:
+      - path: ./env
+        required: true
+    volumes:
+      - ./data/db:/data/db
+    networks:
+      - nightbot
+  
+  adminer:
+    container_name: nightbot_adminer
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - nightbot
+
+  traefik:
+    container_name: nightbot_traefik
+    image: traefik:v3.0
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data/letsencrypt:/letsencrypt
+      - ./data/log:/var/log
+    command:
+      - --api.dashboard=true
+      - --log.level=INFO
+      #- --log.filepath=/var/log/traefik.log
+      - --accesslog=true
+      #- --accesslog.filepath=/var/log/traefik-access.log
+      - --providers.docker.network=${TRAEFIK_NETWORK:-nightbot_traefik}
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mydashboard.rule=Host(`traefik.${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`)
+      - traefik.http.routers.mydashboard.service=api@internal
+      - traefik.http.routers.mydashboard.middlewares=myauth
+      - traefik.http.middlewares.myauth.basicauth.users=admin:$$apr1$$yh36kr9w$$vpLPHqinbs96aO6OLon6X/
