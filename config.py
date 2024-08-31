@@ -3,10 +3,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config(object):
+    USERNAME = os.environ.get('USERNAME')
+    DOMAIN = os.environ.get('DOMAIN')
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = "CHANGE_THIS"
+    BASE_URL = f"https://{USERNAME}.nightbot.{DOMAIN}"
 
     # DATABASE
     SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
@@ -41,6 +44,12 @@ class Config(object):
             },
             'scopes': ['user:email'],
         },
+    }
+
+    NIGHTBOT_OAUTH = {
+        'authorize_url':    'https://api.nightbot.tv/oauth2/authorize',
+        'token_url':        'https://api.nightbot.tv/oauth2/authorize',
+        'callback_url':     f'{os.environ.get("APP_URL")}/nightbot/callback',
     }
 
 

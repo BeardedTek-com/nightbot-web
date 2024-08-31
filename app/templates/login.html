@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{{ url_for('auth.oauth2_authorize', provider='google') }}">
+<button class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+    <img class="max-h-7 max-w-7" src="/img/google.svg"/> <span class="pl-4">Login with Google</span>
+</button>
+</a>
+<a href="{{ url_for('auth.oauth2_authorize', provider='github') }}">
+<button class="inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-primary-700 rounded-lg focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800">
+    <img class="max-h-7 max-w-7" src="/img/github.svg"/><span class="pl-4">Login with GitHub</span>
+</button>
+</a>
+{% endblock %}

@@ -27,7 +27,9 @@ logs.addHandler(default_handler)
 # Routes
 from app import routes
 from app.blueprints.auth import auth as auth_blueprint
+from app.blueprints.nightbot import nightbot as nightbot_blueprint
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(nightbot_blueprint, url_prefix='/nightbot')
 
 
 from app.models import database

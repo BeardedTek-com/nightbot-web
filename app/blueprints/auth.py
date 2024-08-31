@@ -6,7 +6,7 @@ import requests
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import login_user, logout_user, current_user
+from flask_login import login_user, logout_user, login_required, current_user
 from flask import Blueprint, redirect, url_for, render_template, flash, abort, \
     session, current_app, request
 
@@ -24,14 +24,14 @@ def load_user(id):
 
 @auth.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
 
 
 @auth.route('/logout')
 def logout():
     logout_user()
     flash('You have been logged out.')
-    return redirect(url_for('auth.index').replace('http://','https://'))
+    return redirect(url_for('nightbot.index').replace('http://','https://'))
 
 @auth.route('/authorize/<provider>')
 def oauth2_authorize(provider):
@@ -121,4 +121,14 @@ def oauth2_callback(provider):
     
     # Log the user in
     login_user(user)
-    return redirect(url_for('auth.index').replace('http://','https://'))
+    return redirect(url_for('nightbot.index').replace('http://','https://'))
+
+@auth.route('/user')
+@login_required
+def view_user():
+    return render_template('user.html')
+
+@auth.route('/user/edit')
+@login_required
+def edit_user():
+    return render_template('user_form.html')
