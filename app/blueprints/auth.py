@@ -2,7 +2,8 @@ import os
 import secrets
 import requests
 
-
+from validators import url as validate_url
+from time import ctime, time
 from urllib.parse import urlencode
 from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
@@ -14,13 +15,13 @@ from app import db
 from app import login
 from app import logs
 from app.models.database import Users
+from app.helpers.modpipe import get_form_data
 
 auth = Blueprint('auth', __name__)
 
 @login.user_loader
 def load_user(id):
     return db.session.get(Users, int(id))
-
 
 @auth.route('/')
 def index():
@@ -31,7 +32,7 @@ def index():
 def logout():
     logout_user()
     flash('You have been logged out.')
-    return redirect(url_for('nightbot.index').replace('http://','https://'))
+    return redirect(url_for('modpipe.index').replace('http://','https://'))
 
 @auth.route('/authorize/<provider>')
 def oauth2_authorize(provider):
@@ -39,7 +40,7 @@ def oauth2_authorize(provider):
         return redirect(url_for('auth.index').replace('http://','https://'))
 
     provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
-    logs.info(f"##### PROVIDER_DATA #####: {provider_data}")
+    logs.debug(f"##### PROVIDER_DATA #####: {provider_data}")
     
     if provider_data is None:
         abort(404)
@@ -55,17 +56,17 @@ def oauth2_authorize(provider):
         'scope': ' '.join(provider_data['scopes']),
         'state': session['oauth2_state'],
     })
-    logs.info(f"##### Querystring #####:{qs}")
+    logs.debug(f"##### Querystring #####:{qs}")
 
     return redirect(provider_data['authorize_url'] + '?' + qs)
 
 @auth.route('/callback/<provider>')
-def oauth2_callback(provider):
+def oauth2_callback(provider, new_user=False):
     if not current_user.is_anonymous:
         return redirect(url_for('auth.index').replace('http://','https://'))
     
     provider_data = current_app.config['OAUTH2_PROVIDERS'].get(provider)
-    logs.info(f"##### PROVIDER_DATA #####: {provider_data}")
+    logs.debug(f"##### PROVIDER_DATA #####: {provider_data}")
     if provider_data is None:
         abort(404)
     
@@ -107,28 +108,57 @@ def oauth2_callback(provider):
         })
     if response.status_code != 200:
         abort(401)
-    logs.info(f"##### provider_data #####:\n {provider_data}")
+    logs.debug(f"##### provider_data #####:\n {provider_data}")
     email = provider_data['userinfo']['email'](response.json())
-    logs.info(f"##### email #####:\n {email}")
-    logs.info(f"##### Users #####:\n {Users}")
+    logs.debug(f"##### email #####:\n {email}")
+    logs.debug(f"##### Users #####:\n {Users}")
 
     # Find or create the user in the database
     user = db.session.scalar(db.select(Users).where(Users.email == email))
     if user is None:
-        user = Users(email=email, username=email)
-        db.session.add(user)
-        db.session.commit()
-    
+        user = Users(email=email)
+        new_user = True
+    user.last_used = int(time())
+    db.session.add(user)
+    db.session.commit()
+
     # Log the user in
     login_user(user)
-    return redirect(url_for('nightbot.index').replace('http://','https://'))
+
+    # Onboard User and allow them to edit their profile
+    user = db.session.scalar(db.select(Users).where(Users.email == email))
+    if new_user:
+        return render_template('onboarding.html',user=user)
+    else:
+        return redirect(url_for('modpipe.index').replace('http://','https://'))
+
 
 @auth.route('/user')
 @login_required
 def view_user():
     return render_template('user.html')
 
-@auth.route('/user/edit')
+@auth.route('/user/edit', methods=['GET'])
 @login_required
 def edit_user():
-    return render_template('user_form.html')
+    user = db.session.scalar(db.select(Users).where(Users.id == current_user.id))
+    return render_template('user_form.html', user=user)
+
+@auth.route('/user/update', methods=['POST'])
+@login_required
+def edit_user_POST():
+    fields = ['type','id','groups','username','email','admin','display','avatar','bio', 'onboarding']
+    form_data = get_form_data(fields)
+
+    user = db.session.scalar(db.select(Users).where(Users.email == form_data['email']))
+    display_change_date = int(time()) - 2592000
+    user.username = f"""{form_data['username']}"""
+    user.display = f"""{form_data['display']}"""
+    user.avatar = f"""{form_data['avatar']}"""
+    user.admin = f"""{form_data['admin']}"""
+    user.bio = f"""{form_data['bio']}"""
+
+    db.session.commit()
+    if form_data['type'] == "onboarding":
+        return redirect(f"{url_for('modpipe.index').replace('http://','https://')}?welcome")
+    return redirect(url_for('auth.edit_user').replace('http://','https://'))

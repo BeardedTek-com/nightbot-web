@@ -18,7 +18,7 @@ nb = NightBot(
 @app.route('/')
 @app.route('/index')
 def index():
-    return redirect(url_for('nightbot.index').replace('http://','https://'))
+    return redirect(url_for('modpipe.index').replace('http://','https://'))
 
 @app.route('/config')
 def config():

@@ -1,14 +1,15 @@
+name: modpipe
 networks:
-  nightbot_traefik:
+  modpipe_traefik:
     external: true
-  nightbot:
+  modpipe:
     external: true
 
 services:
-  nightbot-web:
+  modpipe-web:
     build: .
-    container_name: nightbot_web
-    image: nightbot-web:latest
+    container_name: modpipe_web
+    image: modpipe-web:latest
 #    ports:
 #      - 5000:5000
     volumes:
@@ -17,8 +18,8 @@ services:
       - ./static:/flask/static
     command: /flask/start.sh
     networks:
-      - nightbot_traefik
-      - nightbot
+      - modpipe_traefik
+      - modpipe
     env_file:
       - path: ./env
         required: true
@@ -29,14 +30,14 @@ services:
       - traefik
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=nightbot_traefik'
-      - 'traefik.http.routers.nightbot-web.rule=Host(`${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`)'
-      - 'traefik.http.routers.nightbot-web.entryPoints=web'
-      - 'traefik.http.routers.nightbot-web.service=nightbot-web-entrypoint'
-      - 'traefik.http.services.nightbot-web-entrypoint.loadbalancer.server.port=5000'
+      - 'traefik.docker.network=modpipe_traefik'
+      - 'traefik.http.routers.modpipe-web.rule=Host(`modpipe.${DOMAIN:-example.com}`)'
+      - 'traefik.http.routers.modpipe-web.entryPoints=web'
+      - 'traefik.http.routers.modpipe-web.service=modpipe-web-entrypoint'
+      - 'traefik.http.services.modpipe-web-entrypoint.loadbalancer.server.port=5000'
 
-  nightbot-static:
-    container_name: nightbot_static
+  modpipe-static:
+    container_name: modpipe_static
     image: nginx:alpine
     restart: always
     volumes:
@@ -44,77 +45,73 @@ services:
       - ./data/static/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./data/static/logs:/logs
     networks:
-      - nightbot_traefik
+      - modpipe_traefik
     depends_on:
       - traefik
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=nightbot_traefik'
-      - 'traefik.http.routers.nightbot-static.rule=Host(`${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`) && PathPrefix(`/img`) || PathPrefix(`/css`) || PathPrefix(`/js`)'
-      - 'traefik.http.routers.nightbot-static.entryPoints=web'
-      - 'traefik.http.routers.nightbot-static.service=nightbot-static-entrypoint'
-      - 'traefik.http.services.nightbot-static-entrypoint.loadbalancer.server.port=80'
+      - 'traefik.docker.network=modpipe_traefik'
+      - 'traefik.http.routers.modpipe-static.rule=Host(`modpipe.${DOMAIN:-example.com}`) && PathPrefix(`/img`) || PathPrefix(`/css`) || PathPrefix(`/js`)'
+      - 'traefik.http.routers.modpipe-static.entryPoints=web'
+      - 'traefik.http.routers.modpipe-static.service=modpipe-static-entrypoint'
+      - 'traefik.http.services.modpipe-static-entrypoint.loadbalancer.server.port=80'
 
   db:
-    container_name: nightbot_db
-    hostname: nightbot_db
+    container_name: modpipe_db
+    hostname: modpipe_db
     image: postgres:16
     restart: always
+    ports:
+      - 5432:5432
     env_file:
       - path: ./env
         required: true
     volumes:
       - ./data/db:/data/db
     networks:
-      - nightbot
+      - modpipe
   
   adminer:
-    container_name: nightbot_adminer
+    container_name: modpipe_adminer
     image: adminer
     restart: always
     ports:
       - 8080:8080
     networks:
-      - nightbot
-      - nightbot_traefik
+      - modpipe
+      - modpipe_traefik
     depends_on:
       - db
       - traefik
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=nightbot_traefik'
-      - 'traefik.http.routers.nightbot-adminer.rule=Host(`${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`) && PathPrefix(`/adminer`)'
-      - 'traefik.http.routers.nightbot-adminer.entryPoints=web'
-      - 'traefik.http.routers.nightbot-adminer.service=nightbot-adminer-entrypoint'
-      - 'traefik.http.services.nightbot-adminer-entrypoint.loadbalancer.server.port=8080'
+      - 'traefik.docker.network=modpipe_traefik'
+      - 'traefik.http.routers.modpipe-adminer.rule=Host(`modpipe.${DOMAIN:-example.com}`) && PathPrefix(`/adminer`)'
+      - 'traefik.http.routers.modpipe-adminer.entryPoints=web'
+      - 'traefik.http.routers.modpipe-adminer.service=modpipe-adminer-entrypoint'
+      - 'traefik.http.services.modpipe-adminer-entrypoint.loadbalancer.server.port=8080'
 
   whoami:
     image: traefik/whoami
     networks:
-      - nightbot_traefik
+      - modpipe_traefik
     deploy:
       labels:
       - traefik.enable=true
-      - traefik.docker.network=nightbot_traefik
-      - traefik.constraint-label=nightbot_traefik
-      - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
-      - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-      - traefik.http.routers.whoami-http.rule=Host(`traefik.main.nightbot.jeandr.net`) && PathPrefix(`/whoami`)
-      - traefik.http.routers.whoami-http.entrypoints=http
-      - traefik.http.routers.whoami-http.middlewares=https-redirect
-      - traefik.http.routers.whoami-https.rule=Host(`traefik.main.nightbot.jeandr.net`) && PathPrefix(`/whoami`)
-      - traefik.http.routers.whoami-https.entrypoints=https
-      - traefik.http.routers.whoami-https.tls=true
-      - traefik.http.services.whoami.loadbalancer.server.port=80
+      - traefik.docker.network=traefik
+      - traefik.constraint-label=traefik
+      - traefik.http.routers.modpipe-whoami-http.rule=Host(`modpipe.jeandr.net`) && PathPrefix(`/whoami`)
+      - traefik.http.routers.modpipe-whoami-http.entrypoints=web
+      - traefik.http.services.modpipe-whoami.loadbalancer.server.port=80
 
   traefik:
-    container_name: nightbot_traefik
+    container_name: modpipe_traefik
     image: traefik:v3.0
     ports:
       - 80:80
       - 443:443
     networks:
-      - nightbot_traefik
+      - modpipe_traefik
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./data/letsencrypt:/letsencrypt
@@ -125,23 +122,13 @@ services:
       # - --log.filepath=/var/log/traefik.log
       - --accesslog=true
       - --accesslog.filepath=/var/log/traefik-access.log
-      - --providers.docker.network=nightbot_traefik
+      - --providers.docker.network=modpipe_traefik
       - --providers.docker.exposedByDefault=false
       - --entrypoints.web.address=:80
-      - --entrypoints.https=true
-      - --entrypoints.https.address:443/tcp
-      - --entryPoints.https.forwardedHeaders.trustedIPs=10.0.0.0/8,172.16.0.0/16,192.168.0.0/16,fc00::/7
-      - --entryPoints.https.proxyProtocol.trustedIPs=10.0.0.0/8,172.16.0.0/16,192.168.0.0/16,fc00::/7
-      - --entryPoints.https.forwardedHeaders.insecure=false
-      - --entryPoints.https.proxyProtocol.insecure=false
-      - --certificatesresolvers.le.acme.email=admin@beardedtek.com
-      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
-      - --certificatesresolvers.le.acme.httpchallenge=true
-      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=http
     labels:
       - 'traefik.enable=true'
-      - 'traefik.docker.network=nightbot_traefik'
-      - 'traefik.http.routers.mydashboard.rule=Host(`traefik.${USERNAME:-main}.nightbot.${DOMAIN:-example.com}`)'
+      - 'traefik.docker.network=modpipe_traefik'
+      - 'traefik.http.routers.mydashboard.rule=Host(`traefik.modpipe.${DOMAIN:-example.com}`)'
       - 'traefik.http.routers.mydashboard.service=api@internal'
       - 'traefik.http.routers.mydashboard.middlewares=myauth'
       - 'traefik.http.middlewares.myauth.basicauth.users=admin:$$apr1$$yh36kr9w$$vpLPHqinbs96aO6OLon6X/'

@@ -3,12 +3,31 @@
 {% block content %}
 <section class="bg-white dark:bg-gray-900">
     <div class="py-8 px-4 mx-auto max-w-2xl lg:py-16">
-        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Edit User Information</h2>
-        <p class="mb-4 font-light text-sm text-gray-900 dark:text-gray-200">Last login: <span class="italic">{% if user.last_used != None %}{{user.last_used|ctime}}{% else %}never{% endif %}</span></p>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endwith %}
+        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Welcome to modPIPE!</h2>
+        <p class="mb-2 font-light text-sm text-gray-900 dark:text-gray-200">
+            Thanks for choosing us!  Before you can continue, lets get a little bit of information about you!
+        </p>
+        <p class="mb-2 font-light text-sm text-gray-900 dark:text-gray-200">
+            You have 2 unique identifiers in modPIPE, your <span class="font-bold italic">email</span>, and your <span class="font-bold italic">username.</span>
+        </p>
+        <p class="mb-2 font-light text-sm text-gray-900 dark:text-gray-200">
+            Your Display Name can be changed periodically, but your email and username will stay constant.
+        </p>
+
         <form method="post" action="/auth/user/update">
             <div class="grid gap-4 sm:grid-cols-2 sm:gap-6">
                 <div class="w-full">
-                    <input type="hidden" id="type" name="type" value="update">
+                    <input type="hidden" id="type" name="type" value="onboarding">
                     <input type="hidden" id="id" name="id" value="{{user.id}}">
                     <input type="hidden" id="email" name="email" value="{{user.email}}">
                     <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>

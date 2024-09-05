@@ -1,5 +1,6 @@
 import os
 import logging
+from time import ctime
 from flask import Flask
 from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
@@ -27,11 +28,15 @@ logs.addHandler(default_handler)
 # Routes
 from app import routes
 from app.blueprints.auth import auth as auth_blueprint
-from app.blueprints.nightbot import nightbot as nightbot_blueprint
+from app.blueprints.modpipe import modpipe as modpipe_blueprint
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
-app.register_blueprint(nightbot_blueprint, url_prefix='/nightbot')
+app.register_blueprint(modpipe_blueprint, url_prefix='/modpipe')
 
 
 from app.models import database
 with app.app_context():
     db.create_all()
+
+@app.template_filter('ctime')
+def timectime(s):
+    return ctime(s)

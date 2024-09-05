@@ -63,3 +63,16 @@
     height: 50px;
     width: auto;
   }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no_scrollbar{
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .enable_modal_scrolling{
+    max-height: 98vh;
+    top: 0vh;
+    overflow-y: auto;
+  }
